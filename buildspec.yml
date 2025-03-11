@@ -6,20 +6,20 @@ phases:
       - echo Logging into Docker Hub...
       - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
       - IMAGE_TAG=$(date +%s)
-  
+
   build:
     commands:
       - echo Using existing Docker image from Docker Hub...
       - docker pull satya368/autocare_img:latest
       - docker tag satya368/autocare_img:latest satya368/autocare_img:$IMAGE_TAG
-  
+
   post_build:
     commands:
       - echo Writing Dockerrun.aws.json file...
-      - echo '{
+      - printf '{
           "AWSEBDockerrunVersion": "1",
           "Image": {
-            "Name": "satya368/autocare_img:'$IMAGE_TAG'",
+            "Name": "satya368/autocare_img:%s",
             "Update": "true"
           },
           "Ports": [
@@ -27,7 +27,7 @@ phases:
               "ContainerPort": 80
             }
           ]
-        }' > Dockerrun.aws.json
+        }' "$IMAGE_TAG" > Dockerrun.aws.json
       - echo Build completed on `date`
 
 artifacts:
