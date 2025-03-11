@@ -3,7 +3,7 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      - echo Logging in to Docker Hub...
+      - echo Logging into Docker Hub...
       - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
       - IMAGE_TAG=$(date +%s)
   
@@ -24,7 +24,7 @@ phases:
           },
           "Ports": [
             {
-              "ContainerPort": "80"
+              "ContainerPort": 80
             }
           ]
         }' > Dockerrun.aws.json
@@ -33,3 +33,4 @@ phases:
 artifacts:
   files:
     - Dockerrun.aws.json
+
