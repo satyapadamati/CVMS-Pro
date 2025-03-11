@@ -6,7 +6,7 @@ phases:
       - echo Logging into Docker Hub...
       - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME"
         --password-stdin
-      - IMAGE_TAG=$(date +%s)
+      - IMAGE_TAG="latest"
   build:
     commands:
       - echo Pulling the latest Docker image from Docker Hub...
