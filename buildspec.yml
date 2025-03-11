@@ -9,17 +9,17 @@ phases:
 
   build:
     commands:
-      - echo Using existing Docker image from Docker Hub...
+      - echo Pulling the latest Docker image from Docker Hub...
       - docker pull satya368/autocare_img:latest
       - docker tag satya368/autocare_img:latest satya368/autocare_img:$IMAGE_TAG
 
   post_build:
     commands:
       - echo Writing Dockerrun.aws.json file...
-      - printf '{
+      - echo '{
           "AWSEBDockerrunVersion": "1",
           "Image": {
-            "Name": "satya368/autocare_img:%s",
+            "Name": "satya368/autocare_img:'"$IMAGE_TAG"'",
             "Update": "true"
           },
           "Ports": [
@@ -27,7 +27,7 @@ phases:
               "ContainerPort": 80
             }
           ]
-        }' "$IMAGE_TAG" > Dockerrun.aws.json
+        }' > Dockerrun.aws.json
       - echo Build completed on `date`
 
 artifacts:
