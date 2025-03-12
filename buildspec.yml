@@ -1,17 +1,21 @@
 ---
 version: 0.2
+
 phases:
   pre_build:
     commands:
       - echo Logging into Docker Hub...
-      - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME"
-        --password-stdin
-      - IMAGE_TAG="latest"
+      - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
+      - IMAGE_TAG=$(date +%Y%m%d%H%M%S)
+      - echo "Using image tag: $IMAGE_TAG"
+
   build:
     commands:
-      - echo Pulling the latest Docker image from Docker Hub...
-      - docker pull satya368/go-mechanic-tracker:latest
-      - docker tag satya368/go-mechanic-tracker:latest satya368/go-mechanic-tracker:$IMAGE_TAG
+      - echo Building the Docker image...
+      - docker build -t satya368/go-mechanic-tracker:$IMAGE_TAG .
+      - echo Pushing the image to Docker Hub...
+      - docker push satya368/go-mechanic-tracker:$IMAGE_TAG
+
   post_build:
     commands:
       - echo Writing Dockerrun.aws.json file...
@@ -29,7 +33,7 @@ phases:
             }
           ]
         }
-        EOF
+       EOF
       - echo Build completed on `date`
 artifacts:
   files:
