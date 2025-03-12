@@ -26,7 +26,7 @@ ENV ROOT_URLCONF=go_mechanic.backend.urls
 RUN python /app/go_mechanic/manage.py collectstatic --noinput
 
 # Expose port
-EXPOSE 8000
+EXPOSE 80
 
 # Run migrations and start server
-CMD ["sh", "-c", "cd /app/go_mechanic && python manage.py migrate && gunicorn --bind 0.0.0.0:8000 go_mechanic.backend.wsgi:application"]
+CMD ["sh", "-c", "cd /app/go_mechanic && python manage.py migrate && gunicorn --bind 0.0.0.0:80 go_mechanic.backend.wsgi:application"]
