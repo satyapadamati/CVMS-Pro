@@ -10,8 +10,8 @@ phases:
   build:
     commands:
       - echo Pulling the latest Docker image from Docker Hub...
-      - docker pull satya368/autocare_img:latest
-      - docker tag satya368/autocare_img:latest satya368/autocare_img:$IMAGE_TAG
+      - docker pull satya368/go-mechanic-tracker:latest
+      - docker tag satya368/go-mechanic-tracker:latest satya368/go-mechanic-tracker:$IMAGE_TAG
   post_build:
     commands:
       - echo Writing Dockerrun.aws.json file...
@@ -20,7 +20,7 @@ phases:
         {
           "AWSEBDockerrunVersion": "1",
           "Image": {
-            "Name": "satya368/autocare_img:$IMAGE_TAG",
+            "Name": "satya368/go-mechanic-tracker:$IMAGE_TAG",
             "Update": "true"
           },
           "Ports": [
