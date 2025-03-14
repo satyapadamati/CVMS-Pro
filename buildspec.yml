@@ -8,11 +8,9 @@ phases:
       - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
       - export IMAGE_TAG=$(date +%Y%m%d%H%M%S)
       - echo "Using image tag: $IMAGE_TAG"
-      - echo "IMAGE_TAG=$IMAGE_TAG" > env_vars  # Save to env_vars file
 
   build:
     commands:
-      - source env_vars  # Load IMAGE_TAG
       - echo "Building the Docker image..."
       - docker build -t satya368/go-mechanic-tracker:$IMAGE_TAG .
       - echo "Pushing the image to Docker Hub..."
@@ -20,13 +18,13 @@ phases:
 
   post_build:
     commands:
-      - source env_vars  # Load IMAGE_TAG again
       - echo "Writing Dockerrun.aws.json file..."
       - |
-        echo '{
+        cat <<EOF > Dockerrun.aws.json
+        {
           "AWSEBDockerrunVersion": "1",
           "Image": {
-            "Name": "satya368/go-mechanic-tracker:'"$IMAGE_TAG"'",
+            "Name": "satya368/go-mechanic-tracker:$IMAGE_TAG",
             "Update": "true"
           },
           "Ports": [
@@ -34,7 +32,8 @@ phases:
               "ContainerPort": 80
             }
           ]
-        }' > Dockerrun.aws.json
+        }
+        EOF
       - echo "Build completed on $(date)"
 
 artifacts:
