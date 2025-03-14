@@ -6,12 +6,13 @@ phases:
     commands:
       - echo Logging into Docker Hub...
       - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
-      - IMAGE_TAG=$(date +%Y%m%d%H%M%S) && echo "IMAGE_TAG=$IMAGE_TAG" >> $CODEBUILD_ENV_VAR_FILE
+      - export IMAGE_TAG=$(date +%Y%m%d%H%M%S)
       - echo "Using image tag: $IMAGE_TAG"
+      - echo "IMAGE_TAG=$IMAGE_TAG" >> env_vars
 
   build:
     commands:
-      - source $CODEBUILD_ENV_VAR_FILE  # Load the IMAGE_TAG variable
+      - source env_vars  # Load IMAGE_TAG variable
       - echo Building the Docker image...
       - docker build -t satya368/go-mechanic-tracker:$IMAGE_TAG .
       - echo Pushing the image to Docker Hub...
@@ -19,13 +20,13 @@ phases:
 
   post_build:
     commands:
-      - source $CODEBUILD_ENV_VAR_FILE
+      - source env_vars  # Load IMAGE_TAG variable again
       - echo Writing Dockerrun.aws.json file...
       - |
         echo '{
           "AWSEBDockerrunVersion": "1",
           "Image": {
-            "Name": "satya368/go-mechanic-tracker:'$IMAGE_TAG'",
+            "Name": "satya368/go-mechanic-tracker:'"$IMAGE_TAG"'",
             "Update": "true"
           },
           "Ports": [
