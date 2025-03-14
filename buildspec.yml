@@ -20,11 +20,10 @@ phases:
     commands:
       - echo "Writing Dockerrun.aws.json file..."
       - |
-        cat <<EOF > Dockerrun.aws.json
-        {
+        echo '{
           "AWSEBDockerrunVersion": "1",
           "Image": {
-            "Name": "satya368/go-mechanic-tracker:$IMAGE_TAG",
+            "Name": "satya368/go-mechanic-tracker:'$IMAGE_TAG'",
             "Update": "true"
           },
           "Ports": [
@@ -32,8 +31,7 @@ phases:
               "ContainerPort": 80
             }
           ]
-        }
-        EOF
+        }' > Dockerrun.aws.json
       - echo "Build completed on $(date)"
 
 artifacts:
